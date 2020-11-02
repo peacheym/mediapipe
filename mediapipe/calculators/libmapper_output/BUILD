@@ -1,6 +1,8 @@
 cc_library(name="libmapper_output",
-    srcs=["libmapper_output.cc"],
+    srcs = glob(["*.cc", "*.h", "*.so"]),
+    hdrs = glob(["*.h"]),
     visibility=["//visibility:public"],
+    
     deps=["//mediapipe/framework:calculator_framework",
         "//mediapipe/framework/formats:detection_cc_proto",
         "//mediapipe/framework/formats:landmark_cc_proto",

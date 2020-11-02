@@ -1,7 +1,9 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-#include "mapper/mapper_cpp.h"
+#include "mapper_cpp.h"
+
+// using namespace mapper;
 
 namespace mediapipe
 {
@@ -28,6 +30,8 @@ namespace mediapipe
             // Add a new libmapper device -> Should this be a global?
 
             mapper::Device dev("test");
+            mapper::Device dev2("test2");
+            mapper::Device dev3("test3");
 
             LOG(INFO) << "HELLO, WORLD!";
 
