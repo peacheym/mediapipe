@@ -40,6 +40,12 @@ namespace mediapipe
             mapper::Signal sig;
             sig = dev->add_sig(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
 
+            // Poll device to get it up and running
+            while (!dev->ready())
+            {
+                dev->poll(10);
+            }
+
             LOG(INFO) << "Success creating libmapper device!";
 
             return ::mediapipe::OkStatus();
