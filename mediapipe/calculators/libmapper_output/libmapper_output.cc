@@ -3,8 +3,6 @@
 
 #include "mapper_cpp.h"
 
-// using namespace mapper;
-
 namespace mediapipe
 {
 
@@ -18,7 +16,7 @@ namespace mediapipe
 
         bool is_debug = true; // Set this variable to false when optimizing for speed
 
-        mapper::Device *dev;
+        mapper::Device *dev; // A global Device
 
         static ::mediapipe::Status GetContract(CalculatorContract *cc)
         {
@@ -37,8 +35,9 @@ namespace mediapipe
             mapper::Device newDevice("libmapper_output");
             dev = &newDevice;
 
-            mapper::Signal sig;
-            sig = dev->add_sig(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
+            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
+            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark2", 1, MPR_FLT);
+            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark3", 1, MPR_FLT);
 
             // Poll device to get it up and running
             while (!dev->ready())
@@ -47,6 +46,8 @@ namespace mediapipe
             }
 
             LOG(INFO) << "Success creating libmapper device!";
+
+            LOG(INFO) << "Number of Signals: " << dev->signals().size();
 
             return ::mediapipe::OkStatus();
         }
@@ -75,7 +76,7 @@ namespace mediapipe
 
             // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
 
-            dev->poll(10);
+            // dev->poll(10);
 
             LOG(INFO) << "Landmark 6: ("
                       << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
