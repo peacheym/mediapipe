@@ -16,6 +16,8 @@ namespace mediapipe
 
         ~libmapper_output(){};
 
+        bool is_debug = true; // Set this variable to false when optimizing for speed
+
         static ::mediapipe::Status GetContract(CalculatorContract *cc)
         {
 
@@ -28,41 +30,50 @@ namespace mediapipe
         {
 
             // Add a new libmapper device -> Should this be a global?
+            LOG(INFO) << "Creating libmapper device!";
 
-            mapper::Device dev("test");
-            mapper::Device dev2("test2");
-            mapper::Device dev3("test3");
+            mapper::Device dev("libmapper_output");
 
-            LOG(INFO) << "HELLO, WORLD!";
+            LOG(INFO) << "Success!";
 
             return ::mediapipe::OkStatus();
         }
 
         ::mediapipe::Status Process(CalculatorContext *cc)
         {
-            // LOG(INFO) << "Process";
+            /*
+                Get the landmark information from the input stream called LANDMARKS
+            */
             const auto &input_packet = cc->Inputs().Tag("LANDMARKS");
-            if (input_packet.IsEmpty())
+
+            if (input_packet.IsEmpty() && is_debug)
             {
+                // If in debug mode and there is and empty packet, notify the log.
                 LOG(INFO) << "Empty Packet!";
             }
 
+            /*
+                Extract the normalized Landmark List from the input packet
+            */
             const auto &input_landmarks = input_packet.Get<NormalizedLandmarkList>();
 
+            /*
+                Update the libmapper device's signals with the extracted (x,y,z) information for each landmark
+            */
+
+            // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
+
             LOG(INFO) << "Landmark 6: ("
-                      << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z();
-
-            // for (int i = 0; i < input_landmarks.landmark_size(); ++i)
-            // {
-            //     const NormalizedLandmark &landmark = input_landmarks.landmark(i);
-
-            // }
+                      << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
 
             return ::mediapipe::OkStatus();
         }
 
         ::mediapipe::Status Close(CalculatorContext *cc)
         {
+            LOG(INFO) << "Ending libmapper connection";
+
+            // TODO: Explicitly close the libmapper connection if required
 
             return ::mediapipe::OkStatus();
         }

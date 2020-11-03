@@ -1,5 +1,5 @@
 cc_library(name="libmapper_output",
-    srcs = glob(["*.cc", "*.h", "*.so"]),
+    srcs = glob(["*.cc", "*.h", "libmapper.so"]),
     hdrs = glob(["*.h"]),
     visibility=["//visibility:public"],
     
