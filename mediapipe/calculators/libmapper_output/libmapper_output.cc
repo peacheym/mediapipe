@@ -18,6 +18,8 @@ namespace mediapipe
 
         bool is_debug = true; // Set this variable to false when optimizing for speed
 
+        mapper::Device *dev;
+
         static ::mediapipe::Status GetContract(CalculatorContract *cc)
         {
 
@@ -32,9 +34,13 @@ namespace mediapipe
             // Add a new libmapper device -> Should this be a global?
             LOG(INFO) << "Creating libmapper device!";
 
-            mapper::Device dev("libmapper_output");
+            mapper::Device newDevice("libmapper_output");
+            dev = &newDevice;
 
-            LOG(INFO) << "Success!";
+            mapper::Signal sig;
+            sig = dev->add_sig(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
+
+            LOG(INFO) << "Success creating libmapper device!";
 
             return ::mediapipe::OkStatus();
         }
@@ -62,6 +68,8 @@ namespace mediapipe
             */
 
             // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
+
+            dev->poll(10);
 
             LOG(INFO) << "Landmark 6: ("
                       << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
