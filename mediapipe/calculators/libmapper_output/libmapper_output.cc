@@ -9,6 +9,9 @@ namespace mediapipe
     class libmapper_output : public CalculatorBase
     {
 
+    private:
+        mapper::Device *dev; // A global Device
+
     public:
         libmapper_output(){};
 
@@ -16,7 +19,17 @@ namespace mediapipe
 
         bool is_debug = true; // Set this variable to false when optimizing for speed
 
-        mapper::Device *dev; // A global Device
+        // mapper::Device get_device()
+
+        // {
+        //     LOG(INFO) << "Number of Signals !!!: " << dev->signals().size();
+
+        //     LOG(INFO) << dev;
+
+        //     LOG(INFO) << "TEST";
+
+        //     return dev;
+        // }
 
         static ::mediapipe::Status GetContract(CalculatorContract *cc)
         {
@@ -43,17 +56,21 @@ namespace mediapipe
             while (!dev->ready())
             {
                 dev->poll(10);
+                LOG(INFO) << "Polling...";
             }
 
             LOG(INFO) << "Success creating libmapper device!";
 
-            LOG(INFO) << "Number of Signals: " << dev->signals().size();
+            // LOG(INFO) << "Number of Signals: " << dev->signals().size();
 
             return ::mediapipe::OkStatus();
         }
 
         ::mediapipe::Status Process(CalculatorContext *cc)
         {
+            LOG(INFO) << "Process: " << dev;
+            dev->poll();
+
             /*
                 Get the landmark information from the input stream called LANDMARKS
             */
@@ -76,7 +93,9 @@ namespace mediapipe
 
             // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
 
-            // dev->poll(10);
+            LOG(INFO) << "TEST ME";
+            LOG(INFO) << dev;
+            LOG(INFO) << "TEST ME AGAIN";
 
             LOG(INFO) << "Landmark 6: ("
                       << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
