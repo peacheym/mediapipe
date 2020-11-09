@@ -1,7 +1,7 @@
 #include "mediapipe/framework/calculator_framework.h"
 #include "mediapipe/framework/formats/landmark.pb.h"
 
-#include "mapper_cpp.h"
+#include <mapper/mapper_cpp.h>
 
 namespace mediapipe
 {
@@ -10,26 +10,14 @@ namespace mediapipe
     {
 
     private:
-        mapper::Device *dev; // A global Device
+        mapper::Device dev; // A global Device
 
     public:
-        libmapper_output(){};
+        libmapper_output() : dev("libmapper_output"){};
 
         ~libmapper_output(){};
 
         bool is_debug = true; // Set this variable to false when optimizing for speed
-
-        // mapper::Device get_device()
-
-        // {
-        //     LOG(INFO) << "Number of Signals !!!: " << dev->signals().size();
-
-        //     LOG(INFO) << dev;
-
-        //     LOG(INFO) << "TEST";
-
-        //     return dev;
-        // }
 
         static ::mediapipe::Status GetContract(CalculatorContract *cc)
         {
@@ -45,31 +33,28 @@ namespace mediapipe
             // Add a new libmapper device -> Should this be a global?
             LOG(INFO) << "Creating libmapper device!";
 
-            mapper::Device newDevice("libmapper_output");
-            dev = &newDevice;
-
-            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
-            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark2", 1, MPR_FLT);
-            dev->add_sig(MPR_DIR_OUT, "output_palm_landmark3", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark2", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark3", 1, MPR_FLT);
 
             // Poll device to get it up and running
-            while (!dev->ready())
+            while (!dev.ready())
             {
-                dev->poll(10);
-                LOG(INFO) << "Polling...";
+                dev.poll(10);
+                LOG(INFO) << "Polling..." << dev;
             }
 
-            LOG(INFO) << "Success creating libmapper device!";
+            LOG(INFO) << "Success creating libmapper device!" << dev;
 
-            // LOG(INFO) << "Number of Signals: " << dev->signals().size();
+            // LOG(INFO) << "Number of Signals: " << dev.signals().size();
 
             return ::mediapipe::OkStatus();
         }
 
         ::mediapipe::Status Process(CalculatorContext *cc)
         {
-            LOG(INFO) << "Process: " << dev;
-            dev->poll();
+            LOG(INFO) << "Polling Device: " << dev;
+            dev.poll();
 
             /*
                 Get the landmark information from the input stream called LANDMARKS
@@ -92,10 +77,6 @@ namespace mediapipe
             */
 
             // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
-
-            LOG(INFO) << "TEST ME";
-            LOG(INFO) << dev;
-            LOG(INFO) << "TEST ME AGAIN";
 
             LOG(INFO) << "Landmark 6: ("
                       << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
