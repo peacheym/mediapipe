@@ -30,24 +30,26 @@ namespace mediapipe
         ::mediapipe::Status Open(CalculatorContext *cc)
         {
 
-            // Add a new libmapper device -> Should this be a global?
-            LOG(INFO) << "Creating libmapper device!";
+            // Add a new libmapper device
+            LOG(INFO) << "Adding signals to libmapper device!";
 
-            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT);
-            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark2", 1, MPR_FLT);
-            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark3", 1, MPR_FLT);
+            // Add palm signal to libmapper device
+            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark", 3, MPR_FLT);
+
+            // Add fingertip signals to libmapper device
+            dev.add_signal(MPR_DIR_OUT, "thumb_fingertip_landmark", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "index_fingertip_landmark", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "middle_finger_landmark", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "ring_finger_landmark", 1, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "pinky_finger_landmark", 1, MPR_FLT);
 
             // Poll device to get it up and running
             while (!dev.ready())
             {
                 dev.poll(10);
-                LOG(INFO) << "Polling..." << dev;
             }
 
-            LOG(INFO) << "Success creating libmapper device!" << dev;
-
-            // LOG(INFO) << "Number of Signals: " << dev.signals().size();
-
+            LOG(INFO) << "libmapper device successfully setup!";
             return ::mediapipe::OkStatus();
         }
 
@@ -75,11 +77,12 @@ namespace mediapipe
             /*
                 Update the libmapper device's signals with the extracted (x,y,z) information for each landmark
             */
-
             // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
 
-            LOG(INFO) << "Landmark 6: ("
-                      << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
+            // LOG(INFO) << "Landmark 6: ("
+            //   << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
+
+            dev.signals()[0].set_value([input_landmarks.landmark(6).x(),input_landmarks.landmark(6).y(),input_landmarks.landmark(6).z()]);
 
             return ::mediapipe::OkStatus();
         }
