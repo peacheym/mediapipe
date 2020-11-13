@@ -34,7 +34,7 @@ namespace mediapipe
             LOG(INFO) << "Adding signals to libmapper device!";
 
             // Add palm signal to libmapper device
-            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark", 3, MPR_FLT);
+            dev.add_signal(MPR_DIR_OUT, "output_palm_landmark", 1, MPR_FLT); // Length might need to be 3, double check the docs
 
             // Add fingertip signals to libmapper device
             dev.add_signal(MPR_DIR_OUT, "thumb_fingertip_landmark", 1, MPR_FLT);
@@ -77,12 +77,10 @@ namespace mediapipe
             /*
                 Update the libmapper device's signals with the extracted (x,y,z) information for each landmark
             */
-            // TODO: Update libmapper signals here!!!! [ i < input_landmarks.landmark_size() ]
 
-            // LOG(INFO) << "Landmark 6: ("
-            //   << input_landmarks.landmark(6).x() << "," << input_landmarks.landmark(6).y() << "," << input_landmarks.landmark(6).z() << ")";
-
-            dev.signals()[0].set_value([input_landmarks.landmark(6).x(),input_landmarks.landmark(6).y(),input_landmarks.landmark(6).z()]);
+            // Update the Palm landmark signal
+            std::array<int, 3> palm_vector{{input_landmarks.landmark(6).x(), input_landmarks.landmark(6).y(), input_landmarks.landmark(6).z()}};
+            dev.signals()[0].set_value(palm_vector);
 
             return ::mediapipe::OkStatus();
         }
