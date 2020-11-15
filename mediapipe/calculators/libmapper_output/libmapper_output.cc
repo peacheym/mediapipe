@@ -79,9 +79,26 @@ namespace mediapipe
             */
 
             // Update the Palm landmark signal
-            std::array<int, 3> palm_vector{{input_landmarks.landmark(6).x(), input_landmarks.landmark(6).y(), input_landmarks.landmark(6).z()}};
+            std::array<int, 3> palm_vector{{input_landmarks.landmark(0).x(), input_landmarks.landmark(0).y(), input_landmarks.landmark(0).z()}};
             dev.signals()[0].set_value(palm_vector);
 
+            // Update the finger tip signals
+            std::array<int, 3> thumb_vector{{input_landmarks.landmark(4).x(), input_landmarks.landmark(4).y(), input_landmarks.landmark(4).z()}};
+            dev.signals()[1].set_value(thumb_vector);
+
+            std::array<int, 3> index_vector{{input_landmarks.landmark(8).x(), input_landmarks.landmark(8).y(), input_landmarks.landmark(8).z()}};
+            dev.signals()[2].set_value(index_vector);
+
+            std::array<int, 3> middle_vector{{input_landmarks.landmark(12).x(), input_landmarks.landmark(12).y(), input_landmarks.landmark(12).z()}};
+            dev.signals()[3].set_value(middle_vector);
+
+            std::array<int, 3> ring_vector{{input_landmarks.landmark(16).x(), input_landmarks.landmark(16).y(), input_landmarks.landmark(16).z()}};
+            dev.signals()[4].set_value(ring_vector);
+
+            std::array<int, 3> pinky_vector{{input_landmarks.landmark(20).x(), input_landmarks.landmark(20).y(), input_landmarks.landmark(20).z()}};
+            dev.signals()[5].set_value(pinky_vector);
+
+            // TODO: I am making an assumption that signals are accessed in the same order that they are added -- Determine if this is in fact the case, and if not make adjustements to code
             return ::mediapipe::OkStatus();
         }
 
