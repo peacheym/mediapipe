@@ -62,6 +62,11 @@ node {
   output_stream: "PRESENCE:hand_presence"
 }
 
+node {
+  calculator: "libmapper_output"
+  input_stream: "LANDMARKS:hand_landmarks"
+}
+
 # Caches a hand rectangle fed back from HandLandmarkSubgraph, and upon the
 # arrival of the next input image sends out the cached rectangle with the
 # timestamp replaced by that of the input image, essentially generating a packet
@@ -93,6 +98,7 @@ node {
   input_stream: "prev_hand_rect_from_landmarks"
   output_stream: "hand_rect"
 }
+
 
 # Subgraph that renders annotations and overlays them on top of the input
 # images (see renderer_cpu.pbtxt).
