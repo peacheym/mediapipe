@@ -55,8 +55,8 @@ namespace mediapipe
 
         ::mediapipe::Status Process(CalculatorContext *cc)
         {
-            LOG(INFO) << "Polling Device: " << dev;
-            dev.poll();
+            // LOG(INFO) << "Polling Device: " << dev;
+            // dev.poll();
 
             /*
                 Get the landmark information from the input stream called LANDMARKS
